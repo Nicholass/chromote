@@ -151,4 +151,6 @@ Update tabs on *rx* by browser responce being unmarshalled
 5) Tabs being updated
 6) broadcast Tabs to clients
 
-It is possible to start from #3 in case of external browser update 9e.g. by mouse/keyboard)
+It is possible to start from #3 in case of external browser update (e.g. by mouse/keyboard)
+
+Extension (brwoser) generates hash /[a-z0-9]{8}/ end sends it via GET with first request. Clients should register on the Hub by this key.

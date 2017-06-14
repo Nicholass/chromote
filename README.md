@@ -135,10 +135,12 @@ Update tabs on **rx** by browser responce being unmarshalled
 ## Comuncation protocol
 
 1.  Client sends command
-2.  Tabs being updated (Do we need this?)
-3.  Command is being sent to Browser along with clint list
+2.  Command is being unmarshalled and marshalled to JSON (fore security reasons), cliens list appended
+3.  Command is being sent to Browser along with client list
 4.  Browser performs actions and responses with tabs list and command result (error||succes)
 5.  Tabs being updated
 6.  broadcast Tabs to clients
 
-It is possible to start from #3 in case of external browser update 9e.g. by mouse/keyboard)
+It is possible to start from #3 in case of external browser update (e.g. by mouse/keyboard)
+
+Extension (brwoser) generates hash *[a-z0-9]{8}* end sends it via GET with first request. Clients should register on the Hub by this key.
