@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Chromote</title>
+    <script id="tab-template" type="x-template">
+     <span class="tab-name"></span>
+     <span class="tab-controls">
+       <a class="tab-refresh">>&#8634;</a>
+       <a class="tab-close">>&times;</a>
+       <!-- add zoom controls -->
+       <!-- add onclick URL input -->
+     </span>
+    </script>
+    <script type="text/javascript">
+     window.onload = function () {
+       var conn, tabs;
+       var tabs = document.getElementById("tabs");
+
+       function getParameterByName(name, url) {
+         if (!url) url = window.location.href;
+         name = name.replace(/[\[\]]/g, "\\$&");
+         var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+             results = regex.exec(url);
+         if (!results) return null;
+         if (!results[2]) return '';
+         return decodeURIComponent(results[2].replace(/\+/g, " "));
+       }
+
+       function closeTab(tab) {
+         //TODO emit event to websocket
+         return function() {
+           var tab = document.getElementById('tab-' + tab.id);
+           tab.parentNode.removeChild(tab);
+         }
+       }
+
+       function drawTab(tab) {
+         var template = document.getElementById("tab-template").innerHTML;
+         var el = document.createElement('li');
+
+         el.id = "tab-" + tab.id;
+         el.innerHTML = template;
+
+         el.getElementsByClassName("tab-name")[0].innerHTML += tab.title;
+         el.getElementsByClassName("tab-close")[0].onclick = closeTab(tab);
+         //TODO bind all other functions
+
+         document.getElementById("tabs-list").appendChild(el);
+         //TODO store all tabs sorted by tab.index
+       }
+
+       if (window["WebSocket"]) {
+         conn = new WebSocket("ws://" + document.location.host + "/client?token=" + getParameterByName("token", document.location.search));
+         conn.onclose = function (evt) {
+           // draw close
+         };
+         conn.onmessage = function (obj) {
+           tabs = obj.data.tabs;
+           //TODO implement two way data binding
+           // map tabs to tab list and ind all event functions
+           // using closures
+         };
+       } else {
+         document.getElementById("tabs").innerHTML = "<b>Your browser does not support WebSockets.</b>";
+       }
+     };
+    </script>
+    <style type="text/css">
+     html {
+         overflow: hidden;
+     }
+
+     body {
+         overflow: hidden;
+         padding: 0;
+         margin: 0;
+         width: 100%;
+         height: 100%;
+         background: gray;
+     }
+
+
+
+    </style>
+  </head>
+  <body>
+    <div id="tabs">
+      <ul class="tabs-list">
+      </ul>
+    </div>
+  </body>
+</html>

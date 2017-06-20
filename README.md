@@ -22,7 +22,7 @@ Exensoion provides API over web socket connection to controll tabs and windows
 It should be registered by it's first message
 
 ```js
-ws = new WebSocket("ws://localhost:8080/browser");
+ws = new WebSocket("ws://localhost:8080/browser?token=XXXXXXXX");
 ws.onopen = function() {
   ws.send("")
 };
@@ -106,12 +106,10 @@ Fields:
 -   *audible* show speacker icon
 -   *pinned* show pin icon
 -   *favIconUrl* show favIcon
--   *highlighted* ??????
 -   *id* 45
 -   *incognito* show mask icon
--   *index* ?????
+-   *index* just index in chrome
 -   *muted* controll mute/unmute
--   *selected* ?????
 -   *status* show/hide spinner
 -   *title*
 -   *url*
@@ -143,4 +141,9 @@ Update tabs on **rx** by browser responce being unmarshalled
 
 It is possible to start from #3 in case of external browser update (e.g. by mouse/keyboard)
 
-Extension (brwoser) generates hash *[a-z0-9]{8}* end sends it via GET with first request. Clients should register on the Hub by this key.
+Extension (brwoser) generates hash *[a-z0-9]{8}* and sends it via GET with first request. Clients should register on the Hub by this key.
+
+
+# s:
+
+views/client.html:30:12: //TODO emit event to websocket views/client.html:46:12: //TODO bind all other functions views/client.html:49:12: //TODO store all tabs sorted by tab.index views/client.html:59:14: */TODO implement two way data binding chrome-ext/index.js:30:6: /* TODO chrome-ext/background.js:13:6: // TODO case by action field and then operate tabs chrome-ext/background.js:15:5: */TODO ws.send chrome.tabs chrome-ext/background.js:23:6: /* TODO store URL in store; configure it via settings page chrome-ext/background.js:33:14: */ TODO die if empty hash chrome-ext/background.js:41:4:/* TODO on store.hash update - drop connection

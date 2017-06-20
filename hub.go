@@ -50,6 +50,7 @@ func (h *Hub) run() {
 			}
 		case command := <-h.tx:
 			// send command to browser and update all the clients
+			//TODO validate command & append clients list
 			select {
 			case h.browser.send <- command:
 				break
@@ -59,6 +60,7 @@ func (h *Hub) run() {
 			}
 		case notification := <-h.rx:
 			log.Printf("notif: %v", notification)
+			//TODO update Tabs struct
 			for client := range h.clients {
 				select {
 				case client.send <- notification:
