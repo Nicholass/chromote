@@ -24,12 +24,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
   document.getElementById('generate').onclick = updateHash;
   document.getElementById('connect').onclick = runConnect;
-})
+});
 
 function renderClients(clients) {
   // TODO
   // for each client build table
-  // | client hostname | type |
+    // | client hostname | type |
+  console.log("clients", clients);
   if (clients.length > 0) {
     clients.forEach();
   }
@@ -37,9 +38,15 @@ function renderClients(clients) {
 }
 
 chrome.extension.onMessage.addListener(
-    function(request, sender, sendResponse){
-      if(request.title == "clients") {
-        renderClients(request.data)
-      }
+  function(request, sender, sendResponse){
+    console.log('client message', request)
+    switch(request.title) {
+      case "clients":
+        renderClients(request.data);
+        break
+      default:
+        console.log("client cannot handle", request);
+        break
     }
+  }
 );
