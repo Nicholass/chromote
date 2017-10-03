@@ -81,7 +81,9 @@ Client sends **commands** and recieves **notifications** Command example:
 {
   targetId: 42, // target tab id
   action: "nvaigate", //one of tab's actions
-  params: "http://linux.org.ru" //parabs for action, if needed
+  params: {
+      url: "http://linux.org.ru" //parabms for action, if needed
+  }
 }
 ```
 
@@ -151,6 +153,20 @@ It has two parts: . background.js - all the logic of extension . index.js - code
 They do comunicate via *chrome.extensionsendMessage*
 
 
-# s:
+# thigs to be done:
 
-views/client.html:30:12: TODO emit event to websocket views/client.html:46:12: TODO bind all other functions views/client.html:49:12: TODO store all tabs sorted by tab.index views/client.html:59:14: TODO implement two way data binding hub.go:53:6: TODO validate command & append clients list hub.go:63:6: TODO update Tabs struct chrome-ext/index.js:30:6: TODO chrome-ext/background.js:1:4: TODO can we move to ES6? chrome-ext/background.js:61:5: TODO after each successfull action send back clients list chrome-ext/background.js:69:6: TODO store URL in store; configure it via settings page chrome-ext/background.js:81:14: TODO die if empty hash chrome-ext/background.js:89:12: TODO chrome-ext/background.js:102:4: TODO on store.hash update - drop connection
+| where                           | what                                                 |
+|------------------------------- |---------------------------------------------------- |
+| views/client.html:30:12:        | emit event to websocket                              |
+| views/client.html:46:12:        | bind all other functions                             |
+| views/client.html:49:12:        | store all tabs sorted by tab.index                   |
+| views/client.html:59:14:        | implement two way data binding                       |
+| hub.go:53:6:                    | validate command & append clients list               |
+| hub.go:63:6:                    | update Tabs struct                                   |
+| chrome-ext/index.js:30:6:       |                                                      |
+| chrome-ext/background.js:1:4:   | can we move to ES6?                                  |
+| chrome-ext/background.js:61:5:  | after each successfull action send back clients list |
+| chrome-ext/background.js:69:6:  | store URL in store; configure it via settings page   |
+| chrome-ext/background.js:81:14: | die if empty hash                                    |
+| chrome-ext/background.js:89:12: |                                                      |
+| chrome-ext/background.js:102:4: | on store.hash update - drop connection               |
