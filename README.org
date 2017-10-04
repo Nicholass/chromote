@@ -137,7 +137,7 @@ Available methods:
 - /Reload/
 - /Activate/ - switch to this tab in view
 - /Open/ opens a new Tab with {URL}
-- /Mute|Unmute/
+- /toggleMute/
 - /ZoomIn|ZoomOut|zoomRestore/
 
 Tab is being changed by method and then corresponding JSON command composed and being sent to *tx*

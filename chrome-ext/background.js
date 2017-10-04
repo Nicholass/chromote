@@ -23,7 +23,7 @@ var actions = {
     chrome.tabs.create({url: p.url});
   },
 
-  mute: function(id) {
+  toggleMute: function(id) {
     chrome.tabs.get(id, function(tab) {
       var muteFlag = tab.mutedInfo && tab.mutedInfo.muted;
       chrome.tabs.update(id, {muted: !muteFlag});

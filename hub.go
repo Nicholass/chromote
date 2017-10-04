@@ -1,6 +1,9 @@
 package main
 
-import "log"
+import (
+	"encoding/json"
+	"log"
+)
 
 // hub maintains the set of active clients and broadcasts messages to the
 // clients.
@@ -51,6 +54,13 @@ func (h *Hub) run() {
 		case command := <-h.tx:
 			// send command to browser and update all the clients
 			//TODO validate command & append clients list
+			c := Action{}
+			err := json.Unmarshal(command, &c)
+			if err != nil {
+				log.Printf("error: %v", err)
+			}
+			log.Printf("Perform:  %s\n", &c)
+
 			select {
 			case h.browser.send <- command:
 				break
@@ -59,10 +69,17 @@ func (h *Hub) run() {
 				//delete(h.browser) // panic
 			}
 		case notification := <-h.rx:
-			log.Printf("notif: %v", notification)
-			//TODO update Tabs struct
+			notif := MessageData{}
+			err := json.Unmarshal(notification, &notif)
+			if err != nil {
+				log.Printf("error: %v", err)
+			}
+
+			h.tabs = &notif.Tabs
+			//log.Printf("cur tabs: \n %s", h.tabs)
 			for client := range h.clients {
 				select {
+				//TODO marshall and send h.tabs
 				case client.send <- notification:
 					break
 				default:
