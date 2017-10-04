@@ -162,19 +162,19 @@ It has two parts:
 
 They do comunicate via /chrome.extensionsendMessage/
 * thigs to be done:
-| where                                | what                                                 |
-|--------------------------------------+------------------------------------------------------|
-| views/client.html:30:12:             | emit event to websocket                              |
-| views/client.html:46:12:             | bind all other functions                             |
-| views/client.html:49:12:             | store all tabs sorted by tab.index                   |
-| views/client.html:59:14:             | implement two way data binding                       |
-| hub.go:53:6:			 | validate command & append clients list               |
-| hub.go:63:6:			 | update Tabs struct                                   |
-| chrome-ext/index.js:30:6:            |                                                      |
-| chrome-ext/background.js:1:4:        | can we move to ES6?                                  |
-| chrome-ext/background.js:61:5:       | after each successfull action send back clients list |
-| chrome-ext/background.js:69:6:       | store URL in store; configure it via settings page   |
-| chrome-ext/background.js:81:14:      | die if empty hash                                    |
-| chrome-ext/background.js:89:12:      |                                                      |
-| chrome-ext/background.js:102:4:      | on store.hash update - drop connection               |
-|--------------------------------------+------------------------------------------------------|
+| where                            | what                                               |
+|----------------------------------+----------------------------------------------------|
+| views/client.html:30:12:         | emit event to websocket                            |
+| views/client.html:46:12:         | bind all other functions                           |
+| views/client.html:49:12:         | store all tabs sorted by tab.index                 |
+| views/client.html:59:14:         | implement two way data binding                     |
+| hub.go:53:6:                     | validate command & append clients list             |
+| hub.go:63:6:                     | update Tabs struct                                 |
+| chrome-ext/index.js:32:6:        | for each client build table                        |
+| chrome-ext/background.js:1:4:    | can we move to ES6?                                |
+| chrome-ext/background.js:4:3:    | add callbacks for each action to get tabs.         |
+| chrome-ext/background.js:61:68:  | change signature, add cb                           |
+| chrome-ext/background.js:78:6:   | store URL in store; configure it via settings page |
+| chrome-ext/background.js:115:11: | all other tab events                               |
+| chrome-ext/background.js:150:4:  | on store.hash update - drop connection             |
+|----------------------------------+----------------------------------------------------|

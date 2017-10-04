@@ -54,42 +54,77 @@ var actions = {
 }
 
 function dispatch(msg) {
+  connectionState();
+
   msg = JSON.parse(msg.data || "{}")
   console.log('dispatching ' + msg.action + ' for ' + msg.targetId );
   if (msg.action) actions[msg.action](msg.targetId, msg.params); //TODO change signature, add cb
 
-  //chrome.extension.sendMessage(msg); in case of clients update
-  //TODO after each successfull action send back clients list
+  if (msg.meta && msg.meta.clients) {
+    chrome.extension.sendMessage({
+      title: "clients",
+      data: msg.meta.clients
+    });
+  }
+
 }
-/* {
- *   targetId: 42, // target tab id
- *   action: "nvaigate", //one of tab's actions
- *   params: {url: "http://linux.org.ru" } //parabs for action, if needed
- * }*/
+
+function connectionState() {
+  chrome.extension.sendMessage({title: "connection", state: conn.readyState})
+  //chrome.storage.sync.set({'connectionState': conn.readyState}
+}
+
 function connect(id, endpoint){
   // TODO store URL in store; configure it via settings page
   var ws = new WebSocket("ws://localhost:8888/" + endpoint + "?token=" + id);
+  ws.onopen = connectionState;
+  ws.onclose = connectionState;
+  ws.onerror = connectionState;
   ws.onmessage = dispatch;
   return ws;
 }
 
+function sendTabs() {
+  if (conn.readyState == 1) {
+    chrome.tabs.query({}, function(tabs) {
+      conn.send(JSON.stringify({title: "tabs", data: tabs}));
+    });
+  } else {
+    console.log("Connection is not ready");
+  }
+}
+
 chrome.extension.onMessage.addListener(
   function(request, sender, sendResponse) {
-    console.log("ext message", request);
+    console.log("ext got message", request);
     switch(request.msg) {
       case "connect":
         chrome.storage.sync.get('browserHash', function(resp) {
-          // TODO die if empty hash
-          console.log('Hash is: ', resp.browserHash);
           conn = connect(resp.browserHash, 'browser');
         });
+
+        // subscribe on all tabs events
+        chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
+          console.log('Updating tablis as ', changeInfo)
+          sendTabs();
+        });
+
+        chrome.tabs.onCreated.addListener(function(tab) {
+          sendTabs();
+        });
+        //TODO all other tab events
         break
 
       case "clients":
         console.log("ext clients call", request.data);
-        // TODO
-        // conn.send({title: "clients", data: {...})
-        // chrome.extension.sendMessage( //to the ext. popup)
+        chrome.extension.sendMessage({
+          title: "clients",
+          data: request.data
+        })
+        break
+
+      case "connection":
+        connectionState();
         break
 
       default:
@@ -100,4 +135,16 @@ chrome.extension.onMessage.addListener(
   }
 );
 
+chrome.storage.onChanged.addListener(function(changes, namespace) {
+  console.log('storgae changes');
+  if (namespace == 'sync') {
+    for (key in changes) {
+      if (key == 'browserHash') {
+        if (conn.readyState == 1) {
+          conn.close();
+        }
+      }
+    }
+  }
+});
 // TODO on store.hash update - drop connection
